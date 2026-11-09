@@ -1,0 +1,55 @@
+# ── Build output ─────────────────────────────────────────────────────────
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+*.tlog
+*.bak
+*.cache
+*.log
+
+# ── Visual Studio ────────────────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dtbcache
+*.dtbcache.json
+*.rsuser
+*.VC.db
+*.VC.VC.opendb
+
+# ── VS Code / JetBrains ──────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.DotSettings.user
+_ReSharper*/
+
+# ── NuGet ────────────────────────────────────────────────────────────────
+packages/
+*.nupkg
+*.snupkg
+
+# ── Test / coverage ──────────────────────────────────────────────────────
+[Tt]est[Rr]esult*/
+coverage*.xml
+coverage*.json
+
+# ── OS ───────────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# ── Local release staging ────────────────────────────────────────────────
+dist/

@@ -1,0 +1,25 @@
+# Store text as LF in the repository, check out with the platform default.
+* text=auto
+
+# Source and project files
+*.cs       text diff=csharp
+*.csproj   text diff=xml
+*.slnx     text
+*.config   text diff=xml
+*.resx     text diff=xml
+*.md       text
+*.yml      text
+*.yaml     text
+*.json     text
+*.ps1      text
+*.cmd      text
+
+# Binary assets
+*.png      binary
+*.jpg      binary
+*.gif      binary
+*.ico      binary
+*.exe      binary
+*.dll      binary
+*.pdb      binary
+*.zip      binary

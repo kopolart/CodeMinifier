@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (Release, .NET Framework 4.8)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build
+        run: msbuild CodeMinifier\CodeMinifier.csproj /p:Configuration=Release /p:Platform=AnyCPU /verbosity:minimal
+
+      - name: Verify output
+        shell: pwsh
+        run: |
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'CodeMinifier/bin/Release/CodeMinifier.exe'
+
+          if (-not (Test-Path $exe)) {
+            throw "Expected build output not found: $exe"
+          }
+
+          $size = (Get-Item $exe).Length
+          Write-Host "Built CodeMinifier.exe ($size bytes)"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CodeMinifier
+          path: |
+            CodeMinifier/bin/Release/CodeMinifier.exe
+            CodeMinifier/bin/Release/CodeMinifier.exe.config
+          if-no-files-found: error
+          retention-days: 14

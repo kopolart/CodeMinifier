@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Package and publish
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build
+        run: msbuild CodeMinifier\CodeMinifier.csproj /p:Configuration=Release /p:Platform=AnyCPU /verbosity:minimal
+
+      - name: Package portable ZIP
+        shell: pwsh
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $stage = Join-Path $env:RUNNER_TEMP "CodeMinifier-$tag"
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+
+          Copy-Item "CodeMinifier/bin/Release/CodeMinifier.exe" $stage
+          Copy-Item "CodeMinifier/bin/Release/CodeMinifier.exe.config" $stage
+          Copy-Item "README.md" $stage
+          Copy-Item "LICENSE" $stage
+
+          $zip = Join-Path $env:GITHUB_WORKSPACE "CodeMinifier-$tag-win.zip"
+          Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip -CompressionLevel Optimal
+
+          Write-Host "Created $zip"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: CodeMinifier-*-win.zip
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
